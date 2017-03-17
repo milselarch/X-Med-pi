@@ -1,35 +1,61 @@
 import sys, os
+import Queue
+import threading
+import time
+
 from SimpleCV import Color,Camera,Display
 import vlc
 
-def scan():
-    cam = Camera()  #starts the camera
-    display = Display()
+class scanner(threading.Thread):
+    def __init__(self):
+        self.display = Display()
+        self.camera = Camera()
+        self.queue = Queue.Queue()
+        self.scan = False
+        
+        threading.Thread.__init__(self)
 
-    while display.isNotDone():
-        img = cam.getImage() #gets image from the camera
+    def put(self):
+        self.queue.put(True)
+        
+    def run(self):
+        display = self.display
+        cam = self.camera
+        #prevBarcode = None
+        audio = vlc.MediaPlayer('')
+        
+        while display.isNotDone():
+            img = cam.getImage() #gets image from the camera
 
-        barcode = img.findBarcode() #finds barcode data from image
-        if (barcode is not None): #if there is some data processed
-            os.system('aplay accept.wav')
-            os.system('aplay hokkiengreeting.wav')
-            barcode = barcode[0]
-            result = str(barcode.data)
+            barcode = img.findBarcode() #finds barcode data from image
+            if self.scan == True and barcode != None:
+                #if there is some data processed
+                os.system('aplay accept.wav')
+                os.system('aplay hokkiengreeting.wav')
+                barcode = barcode[0]
+                result = str(barcode.data)
 
-            if result[:8] == 'https://':
-                vlc.MediaPlayer(result).play()
+                if result[:8] == 'https://' and audio.get_state() != vlc.State.Playing:
+                    audio = vlc.MediaPlayer(result)
+                    audio.play()
+                else:
+                    gold = os.system('aplay %s' % result)
+                    gold = 1
+                    
+                barcode = [] #reset barcode data to empty set
+                self.scan = False
+                #cam.close()
+
             else:
-                gold = os.system('aplay %s' % result)
-                gold = 1
-                
-            barcode = [] #reset barcode data to empty set
-            display.quit()
-            #cam.close()
-            break
+                try:
+                    self.queue.get(block=False)
+                    self.scan = True
+                except Queue.Empty:
+                    pass
 
-        img.save(display) #shows the image on the screen
+            img.save(display) #shows the image on the screen
 
-    sys.exit()
+        #prevBarcode = barcode
     
 if __name__ == '__main__':
-    scan()
+    scanner().start()
