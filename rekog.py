@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 import base64
 import datetime
 import hashlib
@@ -26,8 +27,10 @@ def getSignatureKey(key, date_stamp, regionName, serviceName):
 
 if __name__ == '__main__':
     # Read credentials from the environment
-    access_key = os.environ.get('AKIAI4WW3DVEP4W2HLXA')
-    secret_key = os.environ.get('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')
+    # access_key = os.environ.get('AKIAI4WW3DVEP4W2HLXA')
+    # secret_key = os.environ.get('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')
+    access_key = os.environ.get('AWS_ACCESS_KEY_ID')
+    secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
 
     # Uncomment this line if you use temporary credentials via STS or similar
     #token = os.environ.get('AWS_SESSION_TOKEN')
