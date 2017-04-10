@@ -26,6 +26,8 @@ class scanner(threading.Thread):
         
         while display.isNotDone():
             img = cam.getImage() #gets image from the camera
+	    print img.readText()
+
 
             barcode = img.findBarcode() #finds barcode data from image
             if self.scan == True and barcode != None:
