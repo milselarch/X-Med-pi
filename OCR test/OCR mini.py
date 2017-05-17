@@ -1,5 +1,8 @@
 from PIL import Image
 from pytesser import *
+
+from SimpleCV import Color,Camera,Display
+import vlc
  
 image_file = '2017-03-27.png'
 im = Image.open(image_file)
