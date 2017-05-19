@@ -25,6 +25,7 @@ class scanner(threading.Thread):
         audio = vlc.MediaPlayer('')
         
         while display.isNotDone():
+            time.sleep(0.1)
             img = cam.getImage() #gets image from the camera
 	    print img.readText()
 

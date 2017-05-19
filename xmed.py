@@ -16,7 +16,7 @@ ask = Ask(app, '/')
 #logging.getLogger("flask_ask").setLevel(logging.DEBUG)
 scanner = picam_qr.scanner()
 
-@ask.intent('GPIOControlIntent', mapping={'status': 'status', 'pin': 'pin'})
+@ask.intent("scanIntent")
 def gpio_control(*args):
     #stream_url = '%s' % result
     #thread.start_new_thread(picam_qr.scan, (cam, display))
