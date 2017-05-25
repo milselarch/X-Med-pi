@@ -8,6 +8,9 @@ import logging
 import picam_qr
 import thread
 
+import os
+os.system('pulseaudio -D')
+
 GPIO.setmode(GPIO.BCM)
 
 app = Flask(__name__)
